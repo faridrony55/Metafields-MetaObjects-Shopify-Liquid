@@ -1,0 +1,92 @@
+ 
+<div class="metafields">
+  <p>Selected SKU: <span id="ActiveSKU"></span></p>
+
+ {% for variant in product.variants %}
+    <div class="metafield_box" 
+         id="metafield-box-{{ variant.id }}" 
+         data-variant-id="{{ variant.id }}" 
+         {% unless variant.id == current_variant.id %}style="display: none;"{% endunless %}>
+      <h5>
+        {% for size in variant.metafields.var.size.value %}  
+          {{ size }}{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      </h5>
+      <p>{{ variant.metafields.var.details }}</p>
+    </div>
+  {% endfor %}
+  
+</div>
+
+
+<style>
+  .metafields{
+    padding:10px;
+    background-color:skyblue;
+  }
+  .metafield_box{
+    border:1px solid #fff;
+    margin-bottom:10px;
+    padding:10px;
+    border-radius:10px;
+  }
+</style>
+   
+<script>
+ document.addEventListener('DOMContentLoaded', function() {
+   
+  var productVariants = {{ product.variants | json }};
+
+  // Function to update SKU display
+  function updateSelectedSKU(variantID) {
+    var selectedVariant = productVariants.find(function(variant) {
+      return variant.id === variantID;
+    });
+
+    if (selectedVariant) {
+      document.getElementById('ActiveSKU').textContent = selectedVariant.sku;
+    }
+  }
+
+  // Function to show the corresponding metafield box
+  function showSelectedVariantMetafield(variantID) {
+    document.querySelectorAll('.metafield_box').forEach(function(box) {
+      box.style.display = 'none'; // Hide all metafield boxes
+    });
+
+    var selectedBox = document.querySelector('[data-variant-id="' + variantID + '"]');
+    if (selectedBox) {
+      selectedBox.style.display = 'block'; // Show the selected metafield box
+    }
+  }
+
+  // Attach event listeners to all variant selectors
+  var variantSelectors = document.querySelectorAll('[name="id"]');
+  if (variantSelectors.length > 0) {
+    variantSelectors.forEach(function(selector) {
+      selector.addEventListener('change', function(event) {
+        var selectedVariantID = parseInt(event.target.value);
+        updateSelectedSKU(selectedVariantID);
+        showSelectedVariantMetafield(selectedVariantID);
+      });
+    });
+
+    // Initialize on page load
+    var currentVariant = document.querySelector('[name="id"]:checked') || document.querySelector('[name="id"]');
+    if (currentVariant) {
+      var initialVariantID = parseInt(currentVariant.value);
+      updateSelectedSKU(initialVariantID);
+      showSelectedVariantMetafield(initialVariantID);
+    }
+  }
+});
+
+
+</script> 
+
+
+
+
+
+
+
