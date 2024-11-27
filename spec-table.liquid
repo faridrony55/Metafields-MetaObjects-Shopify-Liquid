@@ -1,0 +1,170 @@
+ 
+<link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+<!-- JavaScript -->
+<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+<div class="container" style="max-width:900px; margin:40px auto;">
+{% liquid 
+  assign lighting = product.metafields.pro.lighting
+  assign manufacturer = product.metafields.pro.manufacturer
+  assign brandlogo = product.metafields.pro.brandlogo
+  assign video = product.metafields.pro.video
+
+  assign features = product.metafields.custom.features
+
+  assign questions_answers = product.metafields.faq.questions_answers
+%}
+
+
+
+  
+    
+
+    
+
+  <h1>Frequently Ask Question</h1>
+<div class="accordion">
+  {% for questions_answer in questions_answers.value %}
+
+  
+
+      <div class="accordion-item">
+    <button class="accordion-header">{{ questions_answer.question  }}</button>
+    <div class="accordion-content">
+      <p>{{ questions_answer.answer  }}</p>
+    </div>
+  </div> 
+ 
+  {% endfor %}
+
+</div>
+
+  
+
+  <table>
+
+
+    <tr>
+      <td>Features</td>
+      <td>
+
+        <div class="flickityMetafields">
+           {% for feature in features.value %}
+              <p>{{ feature   }} </p>
+              
+            {% endfor %}
+        </div>
+
+       
+        
+      </td>
+    </tr>
+    {% if lighting != blank %}
+    <tr>
+      <th>Lighting: </th>
+      <td>{{ lighting }}</td>
+    </tr>
+    {% endif %}
+
+    {% if manufacturer != blank %}
+      <tr>
+        <th>Manufacturer: </th>
+        <td>{{ manufacturer }}</td>
+      </tr> 
+    {% endif %}
+    {% if brandlogo != blank %}
+       
+        <tr>
+          <th>Brandlogo: </th>
+          <td><img src="{{ brandlogo | img_url:'50x' }}" alt="{{ brandlogo.alt }}" width="auto" height="auto"></td>
+        </tr>
+       
+    {% endif %}
+  </table>
+
+  <div>
+    {% if video != blank %}
+       
+        
+           <video controls loop muted  >
+             <source src="{{ video  }}">
+           </video>
+         
+        
+    {% endif %}
+  </div>
+  
+</div>
+
+ <style>
+   .accordion-content {
+  display: none;
+  overflow: hidden;
+  padding: 10px;
+  background-color: #f1f1f1;
+}
+
+.accordion-header {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  border: none;
+  width: 100%;
+  text-align: left;
+  outline: none;
+  transition: background-color 0.3s ease;
+}
+
+.accordion-header:hover {
+  background-color: #0056b3;
+}
+
+.accordion-header.active {
+  background-color: #0056b3;
+}
+
+ </style>
+
+
+<script>
+
+  var elem = document.querySelector('.flickityMetafields');
+var flkty = new Flickity( elem, {
+  // options
+  cellAlign: 'left',
+  contain: true,
+  prevNextButtons: false,
+pageDots: false,
+  autoPlay: true,
+  autoPlay: 1500,
+  fade: true
+});
+   document.querySelectorAll('.accordion-header').forEach((header) => {
+  header.addEventListener('click', () => {
+    const content = header.nextElementSibling;
+    
+    // Toggle active class on header
+    header.classList.toggle('active');
+    
+    // Toggle display of the content
+    if (content.style.display === 'block') {
+      content.style.display = 'none';
+    } else {
+      content.style.display = 'block';
+    }
+  });
+});
+
+</script>
+{% schema %}
+  {
+    "name": "Spec Table",
+    "settings": [],
+    "presets": [
+      {
+        "name": "Spec Table"
+      }
+      
+    ]
+  }
+{% endschema %}
